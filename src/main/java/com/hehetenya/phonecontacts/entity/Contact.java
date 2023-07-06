@@ -5,7 +5,6 @@ import lombok.*;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -39,9 +38,9 @@ public class Contact {
             fetch = FetchType.EAGER)
     private Set<Phone> phones = new HashSet<>();
 
-    public void setEmails(List<String> addresses){
+    public void setEmails(Set<String> addresses) {
         emails.clear();
-        for (String s: addresses) {
+        for (String s : addresses) {
             Email email = new Email();
             email.setAddress(s);
             email.setContact(this);
@@ -49,9 +48,9 @@ public class Contact {
         }
     }
 
-    public void setPhones(List<String> numbers){
+    public void setPhones(Set<String> numbers) {
         phones.clear();
-        for (String s: numbers) {
+        for (String s : numbers) {
             Phone phone = new Phone();
             phone.setNumber(s);
             phone.setContact(this);

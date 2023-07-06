@@ -6,14 +6,16 @@ import com.hehetenya.phonecontacts.entity.Email;
 import com.hehetenya.phonecontacts.entity.Phone;
 import com.hehetenya.phonecontacts.entity.User;
 import com.hehetenya.phonecontacts.repository.ContactRepository;
-import com.hehetenya.phonecontacts.security.UserDetailsImpl;
+import com.hehetenya.phonecontacts.security.UserPrincipal;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 
 @Service
 @AllArgsConstructor
@@ -38,14 +40,12 @@ public class ContactService {
     @Transactional
     public void create(ContactDTO contactDTO) {
         Contact contact = new Contact();
-        removeDuplicateEmailsAndPhones(contactDTO);
         setAllFields(contact, contactDTO);
         contactRepository.save(contact);
     }
 
     @Transactional
     public void delete(Long id) {
-        System.out.println(id);
         contactRepository.deleteById(id);
     }
 
@@ -53,7 +53,6 @@ public class ContactService {
     public void update(Long id, ContactDTO contactDTO) {
         Optional<Contact> optionalContact = contactRepository.getById(id);
         checkUserRights(optionalContact);
-        removeDuplicateEmailsAndPhones(contactDTO);
         Contact contact = optionalContact.get();
 
         setAllFields(contact, contactDTO);
@@ -77,13 +76,13 @@ public class ContactService {
         ContactDTO contactDTO = new ContactDTO();
         contactDTO.setName(contact.getName());
 
-        List<String> emails = new LinkedList<>();
+        Set<String> emails = new HashSet<>();
         for (Email e: contact.getEmails()) {
             emails.add(e.getAddress());
         }
         contactDTO.setEmails(emails);
 
-        List<String> phones = new LinkedList<>();
+        Set<String> phones = new HashSet<>();
         for (Phone p: contact.getPhones()) {
             phones.add(p.getNumber());
         }
@@ -93,12 +92,7 @@ public class ContactService {
 
     private static User getCurrentUser(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        UserPrincipal userDetails = (UserPrincipal) authentication.getPrincipal();
         return userDetails.getUser();
-    }
-
-    private void removeDuplicateEmailsAndPhones(ContactDTO contactDTO){
-        contactDTO.setEmails(new ArrayList<>(new HashSet<>(contactDTO.getEmails())));
-        contactDTO.setPhones(new ArrayList<>(new HashSet<>(contactDTO.getPhones())));
     }
 }

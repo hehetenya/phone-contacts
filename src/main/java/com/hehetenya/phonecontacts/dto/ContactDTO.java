@@ -1,17 +1,15 @@
 package com.hehetenya.phonecontacts.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
-import java.util.List;
+import java.util.Set;
 
-@Getter
-@Setter
+@Data
 public class ContactDTO {
     @NotBlank(message = "Login must not be blank.")
     private String name;
 
-    private List<String> emails;
-    private List<String> phones;
+    private Set<String> emails;
+    private Set<String> phones;
 }

@@ -4,10 +4,9 @@ import com.hehetenya.phonecontacts.dto.ContactDTO;
 import com.hehetenya.phonecontacts.service.ContactService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-
+import javax.validation.Valid;
 import java.util.Set;
 
 @RestController
@@ -28,11 +27,11 @@ public class ContactController {
 
     @PutMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void createContact(@RequestBody ContactDTO contactDTO) {
+    public void createContact(@RequestBody @Valid ContactDTO contactDTO) {
         contactService.create(contactDTO);
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public void deleteContact(@PathVariable Long id) {
         contactService.delete(id);
@@ -41,7 +40,7 @@ public class ContactController {
     @PostMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public void updateContact(@PathVariable Long id,
-                              @RequestBody ContactDTO contactDTO) {
+                              @RequestBody @Valid ContactDTO contactDTO) {
         contactService.update(id, contactDTO);
     }
 }

@@ -1,6 +1,6 @@
 package com.hehetenya.phonecontacts.config;
 
-import com.hehetenya.phonecontacts.service.UserDetailsServiceImpl;
+import com.hehetenya.phonecontacts.service.UserPrincipalService;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,12 +18,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @AllArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final UserDetailsServiceImpl userDetailsService;
+    private final UserPrincipalService userDetailsService;
     private final JWTFilter jwtFilter;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        System.out.println("in security config");
         http.csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/auth/login", "/auth/register").permitAll()

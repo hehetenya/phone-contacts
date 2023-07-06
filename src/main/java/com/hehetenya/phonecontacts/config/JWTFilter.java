@@ -2,7 +2,7 @@ package com.hehetenya.phonecontacts.config;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.hehetenya.phonecontacts.security.JWTUtil;
-import com.hehetenya.phonecontacts.service.UserDetailsServiceImpl;
+import com.hehetenya.phonecontacts.service.UserPrincipalService;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,7 +20,7 @@ import java.io.IOException;
 @AllArgsConstructor
 public class JWTFilter extends OncePerRequestFilter {
     private final JWTUtil jwtUtil;
-    private final UserDetailsServiceImpl userDetailsService;
+    private final UserPrincipalService userDetailsService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
@@ -35,7 +35,6 @@ public class JWTFilter extends OncePerRequestFilter {
             } else {
                 try {
                     String login = jwtUtil.validateTokenAndRetrieveClaim(jwt);
-                    System.out.println("before calling userDetailsService");
                     UserDetails userDetails = userDetailsService.loadUserByUsername(login);
 
                     UsernamePasswordAuthenticationToken authToken =
